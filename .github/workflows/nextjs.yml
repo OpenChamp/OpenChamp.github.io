@@ -5,29 +5,23 @@
 name: Deploy Next.js site to Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Build job
   build:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -85,9 +79,48 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # Post-Deployment Checks
+  post-deploy:
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+    needs: deploy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Check for new blog posts
+        id: check-posts
+        run: |
+          if git diff --name-only HEAD~1 HEAD | grep -q "^log_entries/"; then
+            echo "has-new-posts=true" >> $GITHUB_OUTPUT
+            NEW_FILES=$(git diff --name-only HEAD~1 HEAD | grep "^log_entries/" || echo "")
+            echo "new-files<<EOF" >> $GITHUB_OUTPUT
+            echo "$NEW_FILES" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "has-new-posts=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Send Discord notification
+        if: steps.check-posts.outputs.has-new-posts == 'true'
+        uses: tsickert/discord-webhook@v5.3.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          content: |
+            🎉 **New Dev Blog Posts Published!**
+            
+            📚 **New Blog Posts:**
+            ```
+            ${{ steps.check-posts.outputs.new-files }}
+            ```
+            
+            👉 **Read More:** https://openchamp.github.io/dev_blog
+      
