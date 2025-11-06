@@ -1,21 +1,17 @@
 import { Link } from "next-view-transitions";
 import { getAllBlogPosts } from "../lib/blog";
+import Headbar from "../components/Headbar";
 
 export default function DevBlog() {
   const posts = getAllBlogPosts();
 
   return (
     <main className="min-h-screen bg-stone-950 text-stone-200">
+      <Headbar />
+
       {/* Header */}
-      <div className="bg-gradient-to-b from-stone-950 to-stone-900 border-b border-stone-800 py-8 px-4">
+      <div className="bg-gradient-to-b from-stone-950 to-stone-900 border-b border-stone-800 py-8 px-4 pt-24">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-4 mb-4">
-            <Link href="/">
-              <button className="px-4 py-2 bg-stone-800 hover:bg-stone-700 rounded-lg transition-colors">
-                ← Back
-              </button>
-            </Link>
-          </div>
           <h1 className="text-5xl font-bold mb-2 dev-blog-transition">Dev Blog</h1>
           <p className="text-stone-400">
             Development updates and progress reports
