@@ -21,7 +21,7 @@ export default function DevBlog() {
 
       {/* Blog Posts List */}
       <div className="max-w-4xl mx-auto py-12 px-4">
-        <div className="space-y-6">
+        <div className="flex flex-col gap-10">
           {posts.length === 0 ? (
             <div className="text-center text-stone-400 py-12">
               No blog posts yet.
