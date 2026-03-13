@@ -11,13 +11,15 @@ export default function Headbar() {
     <div className="absolute top-0 z-10 w-full bg-gradient-to-b from-stone-950 to-transparent">
       {/* Desktop Navigation */}
       <div className="hidden xl:flex justify-center items-center grid-cols-3 gap-4 xl:gap-8 p-4 px-8">
-        <img
-          src="/champeye.webp"
-          alt="OpenChamp Logo"
-          height={48}
-          width={48}
-          className="select-text"
-        />
+        <Link href="/">
+          <img
+            src="/champeye.webp"
+            alt="OpenChamp Logo"
+            height={48}
+            width={48}
+            className="select-text"
+          />
+        </Link>
         <nav className="justify-center overflow-auto">
           <ul className="flex gap-12 font-bold text-sm tracking-wider text-stone-200">
             <li>
@@ -49,13 +51,15 @@ export default function Headbar() {
 
       {/* Mobile Navigation Header */}
       <div className="xl:hidden flex justify-between items-center p-2 px-4">
-        <img
-          src="/champeye.webp"
-          alt="OpenChamp Logo"
-          height={40}
-          width={40}
-          className="select-text"
-        />
+        <Link href="/">
+          <img
+            src="/champeye.webp"
+            alt="OpenChamp Logo"
+            height={40}
+            width={40}
+            className="select-text"
+          />
+        </Link>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="p-2 text-stone-200 hover:text-cyan-400 transition-colors"
